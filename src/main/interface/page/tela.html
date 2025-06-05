@@ -16,14 +16,14 @@
     </nav>
 <div class="container mx-auto mt-8 p-4">
     <h2 class="text-2xl font-bold mb-4">Banco de Imagens</h2>
-    <form id="formCadastro" class="bg-white shadow-md rounded p-4" onsubmit="cadastrar()">
+    <form id="formCadastro" class="bg-white shadow-md rounded p-4" onsubmit="cadastrar(event)">
         <div class="mb-4">
             <label for="nome" class="block text-dark-700 font-bold mb-2">Nome</label>
             <input type="text" id="nome" class="w-full px-3 py-2 border rounded" required>
         </div>
         <div class="mb-4">
-            <label for="Url" class="block text-gray-700 font-bold mb-2">Url</label>
-            <input type="TEXT" id="Url" class="w-full px-3 py-2 border rounded" required>
+            <label for="url" class="block text-gray-700 font-bold mb-2">url</label>
+            <input type="TEXT" id="url" class="w-full px-3 py-2 border rounded" required>
         </div>
         <button type="submit"  class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Adicionar</button>
     </form>
@@ -35,7 +35,7 @@
             <tr>
                 <th class="px-4 py-2">Id</th>
                 <th class="px-4 py-2">Nome</th>
-                <th class="px-4 py-2">URL</th>
+                <th class="px-4 py-2">Url</th>
                 <th class="px-4 py-2">Ação</th>
             </tr>
         </thead>

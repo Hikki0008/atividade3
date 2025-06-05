@@ -12,51 +12,43 @@ fetch("http://localhost:8080/api/Imagens", {
     console.log(error);
 });
 
-function addLinha(dadosAPI){
+function addLinha(dadosAPI) {
     const tabela = document.getElementById("tabelaCorpo");
     dadosAPI.forEach(element => {
         const linha = document.createElement("tr");
-        // Adicionando HTML
         linha.innerHTML = `
-            <tr>
-                <td class="px-4 py-2">${element.id}</td>
-                <td class="px-4 py-2">${element.nome}</td>
-                <td class="px-4 py-2">${element.url}</td>
-                <td class="px-4 py-2"><button class="bg-red-500 text-white px-2 py-1 rounded" onclick="remover(this)">remover</button></td>
-            </tr>
+            <td class="px-4 py-2">${element.id || ''}</td>
+            <td class="px-4 py-2">${element.nome}</td>
+            <td class="px-4 py-2">${element.url}</td>
+            <td class="px-4 py-2">
+                <button class="bg-red-500 text-white px-2 py-1 rounded" onclick="remover(this)">remover</button>
+            </td>
         `;
         tabela.appendChild(linha);
     });
+}
 
-    function salvar() {
-        event.preventDefault();
-        const nome = document.getElementById("nome").value;
-        const url = document.getElementById("url").value;
-        if (nome && url) {
+function cadastrar(event) {
+    event.preventDefault();
+    const nome = document.getElementById("nome").value;
+    const url = document.getElementById("url").value;
+    if (nome && url) {
+        addLinha([{ nome: nome.trim(), url: url.trim() }]);
+        document.getElementById("nome").value = "";
+        document.getElementById("url").value = "";
 
-            this.addLinha([{"nome": nome.trim(), "url": url.trim()}]);
+        fetch("http://localhost:8080/api/Imagens", {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nome: nome.trim(), url: url.trim() })
+        })
+        .then(response => response.json())
+        .then(data => console.log("Resposta da API:", data))
+        .catch(error => console.log(error));
+    }
+}
 
-            // Limpando os campos
-            document.getElementById("nome").value = "";
-            document.getElementById("url").value = "";
-
-            // API POST
-            fetch("http://localhost:8080/api/Imagens", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({"nome": nome, "url": url})
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log("Resposta da API:", data);
-            })
-            .catch(error => {
-                console.log(error);
-            });
-        }
-    } function editar(dadosbotao) {
+     function editar(dadosbotao) {
         const linha = dadosbotao.closest('tr');
         const id = linha.querySelector("td").innerText;
         const nomeAtual = linha.children[1].innerText;
