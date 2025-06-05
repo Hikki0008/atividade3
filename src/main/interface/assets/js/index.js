@@ -1,4 +1,4 @@
-fetch("http://localhost:8080/api/imagens", {
+fetch("http://localhost:8080/api/Imagens", {
     method: 'GET',
     headers: {
         'Content-Type': 'application/json'
@@ -41,7 +41,7 @@ function addLinha(dadosAPI){
             document.getElementById("url").value = "";
 
             // API POST
-            fetch("http://localhost:8080/api/imagens", {
+            fetch("http://localhost:8080/api/Imagens", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -66,7 +66,7 @@ function addLinha(dadosAPI){
             title: 'Editar dados',
             html: `
       <input id="editNome" class="swal2-input" placeholder="Nome" value="${nomeAtual}">
-      <input id="editUrl" class="swal2-input" placeholder="Url" value="${urllAtual}">
+      <input id="editUrl" class="swal2-input" placeholder="Url" value="${urlAtual}">
     `,
             confirmButtonText: 'Salvar',
             showCancelButton: true,
@@ -84,7 +84,7 @@ function addLinha(dadosAPI){
         }).then((result) => {
             if (result.isConfirmed) {
 
-                fetch(`http://localhost:8080/api/alunos/${id}`, {
+                fetch(`http://localhost:8080/api/Imagens/${id}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
@@ -114,7 +114,7 @@ function addLinha(dadosAPI){
                 const linharemover = dadosbotao.closest('tr');
                 const id = linharemover.querySelector("td").innerText;
 
-                fetch(`http://localhost:8080/api/alunos/${id}`, {
+                fetch(`http://localhost:8080/api/Imagens/${id}`, {
                     method: 'DELETE'
                 })
                     .then(() => {

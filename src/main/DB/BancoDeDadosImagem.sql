@@ -8,3 +8,4 @@ CREATE DATABASE imagens_banco
         url TEXT DEFAULT NULL,
         PRIMARY kEY (id)
     );
+    SELECT * from imagem
