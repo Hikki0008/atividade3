@@ -5,22 +5,24 @@ fetch("http://localhost:8080/api/Imagens", {
     },
     })
 .then(response => response.json())
-.then(data => {
-    addLinha(data);
-})
-.catch(error => {
-    console.log(error);
-});
+.then(data => addLinha(data)) 
+.catch(error => console.log(error));
+
 
 function addLinha(dadosAPI) {
     const tabela = document.getElementById("tabelaCorpo");
+    tabela.innerHTML = "";
     dadosAPI.forEach(element => {
         const linha = document.createElement("tr");
+        linha.setAttribute("data-id", element.id || "");
+
+
         linha.innerHTML = `
             <td class="px-4 py-2">${element.id || ''}</td>
             <td class="px-4 py-2">${element.nome}</td>
             <td class="px-4 py-2">${element.url}</td>
             <td class="px-4 py-2">
+                <button class="bg-blue-500 text-white px-2 py-1 rounded mr-2" onclick="editar(this)">editar</button>
                 <button class="bg-red-500 text-white px-2 py-1 rounded" onclick="remover(this)">remover</button>
             </td>
         `;
@@ -30,23 +32,29 @@ function addLinha(dadosAPI) {
 
 function cadastrar(event) {
     event.preventDefault();
-    const nome = document.getElementById("nome").value;
-    const url = document.getElementById("url").value;
-    if (nome && url) {
-        addLinha([{ nome: nome.trim(), url: url.trim() }]);
-        document.getElementById("nome").value = "";
-        document.getElementById("url").value = "";
+    const nome = document.getElementById("nome").value.trim();
+    const url = document.getElementById("url").value.trim();
+      if (!nome || !url) return;
+
+    
+    document.getElementById("nome").value = "";
+    document.getElementById("url").value = "";
 
         fetch("http://localhost:8080/api/Imagens", {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ nome: nome.trim(), url: url.trim() })
+            body: JSON.stringify({ nome,url })
         })
         .then(response => response.json())
-        .then(data => console.log("Resposta da API:", data))
-        .catch(error => console.log(error));
-    }
+    .then(data => {
+        // Atualiza lista com nova imagem
+        fetch("http://localhost:8080/api/Imagens")
+            .then(resp => resp.json())
+            .then(imagens => addLinha(imagens));
+    })
+    .catch(error => console.error("Erro ao cadastrar:", error));
 }
+
 
      function editar(dadosbotao) {
         const linha = dadosbotao.closest('tr');
@@ -60,7 +68,7 @@ function cadastrar(event) {
       <input id="editNome" class="swal2-input" placeholder="Nome" value="${nomeAtual}">
       <input id="editUrl" class="swal2-input" placeholder="Url" value="${urlAtual}">
     `,
-            confirmButtonText: 'Salvar',
+            confirmButtonText: 'salvar',
             showCancelButton: true,
             preConfirm: () => {
                 const nome = document.getElementById('editNome').value.trim();
@@ -83,10 +91,16 @@ function cadastrar(event) {
                     },
                     body: JSON.stringify(result.value)
                 })
-                    .then(() => {
+                    .then(response => {
+                        if (response.ok) {
+                            linha.children[1].innerText = result.value.nome;
+                            linha.children[2].innerText = result.value.url;
+                            Swal.fire('Atualizao', '', 'success')
+                        }else{
+                            Swal.fire('Erro','Falha ai atualizar')
+                        }
 
-                        linha.children[1].innerText = result.value.nome;
-                        linha.children[2].innerText = result.value.url;
+                        
 
                     })
             }
@@ -106,14 +120,22 @@ function cadastrar(event) {
                 const linharemover = dadosbotao.closest('tr');
                 const id = linharemover.querySelector("td").innerText;
 
-                fetch(`http://localhost:8080/api/Imagens/${id}`, {
-                    method: 'DELETE'
-                })
-                    .then(() => {
-                        linharemover.remove();
-                    })
+              fetch(`http://localhost:8080/api/Imagens/${id}`, {
+            method: 'DELETE'
+    })
+    .then(response => {
+    if (response.ok) {
+        linharemover.remove();
+    } else {
+        Swal.fire('Erro', 'Não foi possível remover a imagem', 'error');
+    }
+    })
+    .catch(() => {
+    Swal.fire('Erro', 'Não foi possível remover a imagem', 'error');
+    });
+
 
             }
         });
     }
-}
+

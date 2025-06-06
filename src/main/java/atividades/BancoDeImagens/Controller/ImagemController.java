@@ -50,14 +50,14 @@ public class ImagemController {
 
     }
 
-    @DeleteMapping
-    public ResponseEntity<Void> deletar(@PathVariable Long id){
-        if (!service.buscarPorId(id).isPresent()) {
-            return ResponseEntity.notFound().build();
-
-        }
-
-        service.deletar(id);
-        return ResponseEntity.noContent().build();
+   @DeleteMapping("/{id}")
+public ResponseEntity<Void> deletar(@PathVariable Long id) {
+    if (!service.buscarPorId(id).isPresent()) {
+        return ResponseEntity.notFound().build();
     }
+
+    service.deletar(id);
+    return ResponseEntity.noContent().build();
+}
+
 }
